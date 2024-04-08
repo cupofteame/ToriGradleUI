@@ -108,30 +108,22 @@ publishMods {
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
             project.modrinth_required_dependencies.split(", ").each {
-                requires {
-                    slug = it
-                }
+                requires(it)
             }
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
             project.modrinth_optional_dependencies.split(", ").each {
-                optional {
-                    slug = it
-                }
+                optional(it)
             }
         }
         if (project.hasProperty("modrinth_incompatible_dependencies")) {
             project.modrinth_incompatible_dependencies.split(", ").each {
-                incompatible {
-                    slug = it
-                }
+                incompatible(it)
             }
         }
         if (project.hasProperty("modrinth_embedded_dependencies")) {
             project.modrinth_embedded_dependencies.split(", ").each {
-                embeds {
-                    slug = it
-                }
+                embeds(it)
             }
         }
     }
@@ -157,30 +149,22 @@ publishMods {
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
                 project.curseforge_required_dependencies.split(", ").each {
-                    requires {
-                        slug = it
-                    }
+                    requires(it)
                 }
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
                 project.curseforge_optional_dependencies.split(", ").each {
-                    optional {
-                        slug = it
-                    }
+                    optional(it)
                 }
             }
             if (project.hasProperty("curseforge_incompatible_dependencies")) {
                 project.curseforge_incompatible_dependencies.split(", ").each {
-                    incompatible {
-                        slug = it
-                    }
+                    incompatible(it)
                 }
             }
             if (project.hasProperty("curseforge_embedded_dependencies")) {
                 project.curseforge_embedded_dependencies.split(", ").each {
-                    embeds {
-                        slug = it
-                    }
+                    embeds(it)
                 }
             }
         }
