@@ -113,17 +113,17 @@ publishMods {
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
             splitProperty(project.modrinth_optional_dependencies).each {
-                optional(it.toString())
+                optional(it)
             }
         }
         if (project.hasProperty("modrinth_incompatible_dependencies")) {
             splitProperty(project.modrinth_incompatible_dependencies).each {
-                incompatible(it.toString())
+                incompatible(it)
             }
         }
         if (project.hasProperty("modrinth_embedded_dependencies")) {
             splitProperty(project.modrinth_embedded_dependencies).each {
-                embeds(it.toString())
+                embeds(it)
             }
         }
     }
@@ -149,22 +149,22 @@ publishMods {
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
                 splitProperty(project.curseforge_required_dependencies).each {
-                    requires(it.toString())
+                    requires(it)
                 }
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
                 splitProperty(project.curseforge_optional_dependencies).each {
-                    optional(it.toString())
+                    optional(it)
                 }
             }
             if (project.hasProperty("curseforge_incompatible_dependencies")) {
                 splitProperty(project.curseforge_incompatible_dependencies).each {
-                    incompatible(it.toString())
+                    incompatible(it)
                 }
             }
             if (project.hasProperty("curseforge_embedded_dependencies")) {
-                splitProperty(project.curseforge_embedded_dependencies.split).each {
-                    embeds(it.toString())
+                splitProperty(project.curseforge_embedded_dependencies).each {
+                    embeds(it)
                 }
             }
         }
@@ -228,10 +228,10 @@ tasks.publishMods.doLast {
 // Support functions
 
 String[] splitProperty(var property) {
-    return property.toString().map {
-        it      .split(',')
-                .map(String::trim)
-                .filter(String::isNotEmpty)
+    return property
+            .split(',')
+            .map(String::trim)
+            .filter(String::isNotEmpty)
     }
 }
 
