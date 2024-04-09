@@ -107,7 +107,7 @@ publishMods {
 
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
-            splitProperty(project.getProperty("modrinth_required_dependencies")).each {
+            project.getProperty("modrinth_required_dependencies").split(',').map(String::trim).filter(String::isNotEmpty).each {
                 requires(it)
             }
         }
