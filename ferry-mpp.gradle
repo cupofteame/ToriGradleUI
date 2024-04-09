@@ -107,16 +107,16 @@ publishMods {
 
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
-            required(project.modrinth_required_dependencies.split(", "))
+            requires = project.modrinth_required_dependencies.split(", ")
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
-            optional(project.modrinth_optional_dependencies.split(", "))
+            optional = project.modrinth_optional_dependencies.split(", ")
         }
         if (project.hasProperty("modrinth_incompatible_dependencies")) {
-            incompatible(project.modrinth_incompatible_dependencies.split(", "))
+            incompatible = project.modrinth_incompatible_dependencies.split(", ")
         }
         if (project.hasProperty("modrinth_embedded_dependencies")) {
-            embeds(project.modrinth_embedded_dependencies.split(", "))
+            embeds = project.modrinth_embedded_dependencies.split(", ")
         }
     }
 
@@ -140,16 +140,16 @@ publishMods {
 
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
-                required(project.curseforge_required_dependencies.split(", "))
+                requires = project.curseforge_required_dependencies.split(", ")
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
-                optional(project.curseforge_optional_dependencies.split(", "))
+                optional = project.curseforge_optional_dependencies.split(", ")
             }
             if (project.hasProperty("curseforge_incompatible_dependencies")) {
-                incompatible(project.curseforge_incompatible_dependencies.split(", "))
+                incompatible = project.curseforge_incompatible_dependencies.split(", ")
             }
             if (project.hasProperty("curseforge_embedded_dependencies")) {
-                embeds(project.curseforge_embedded_dependencies.split(", "))
+                embeds = project.curseforge_embedded_dependencies.split(", ")
             }
         }
     }
