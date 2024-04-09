@@ -107,7 +107,7 @@ publishMods {
 
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
-            requires(project.modrinth_required_dependencies.split(", "))
+            required(project.modrinth_required_dependencies.split(", "))
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
             optional(project.modrinth_optional_dependencies.split(", "))
@@ -140,7 +140,7 @@ publishMods {
 
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
-                requires(project.curseforge_required_dependencies.split(", "))
+                required(project.curseforge_required_dependencies.split(", "))
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
                 optional(project.curseforge_optional_dependencies.split(", "))
