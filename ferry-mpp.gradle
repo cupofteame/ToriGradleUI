@@ -107,24 +107,16 @@ publishMods {
 
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
-            project.modrinth_required_dependencies.split(", ").each {
-                required(it)
-            }
+            requires(project.modrinth_required_dependencies.split(", "))
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
-            project.modrinth_optional_dependencies.split(", ").each {
-                optional(it)
-            }
+            optional(project.modrinth_optional_dependencies.split(", "))
         }
         if (project.hasProperty("modrinth_incompatible_dependencies")) {
-            project.modrinth_incompatible_dependencies.split(", ").each {
-                incompatible(it)
-            }
+            incompatible(project.modrinth_incompatible_dependencies.split(", "))
         }
         if (project.hasProperty("modrinth_embedded_dependencies")) {
-            project.modrinth_embedded_dependencies.split(", ").each {
-                embeds(it)
-            }
+            embeds(project.modrinth_embedded_dependencies.split(", "))
         }
     }
 
@@ -148,24 +140,16 @@ publishMods {
 
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
-                project.curseforge_required_dependencies.split(", ").each {
-                    required(it)
-                }
+                requires(project.curseforge_required_dependencies.split(", "))
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
-                project.curseforge_optional_dependencies.split(", ").each {
-                    optional(it)
-                }
+                optional(project.curseforge_optional_dependencies.split(", "))
             }
             if (project.hasProperty("curseforge_incompatible_dependencies")) {
-                project.curseforge_incompatible_dependencies.split(", ").each {
-                    incompatible(it)
-                }
+                incompatible(project.curseforge_incompatible_dependencies.split(", "))
             }
             if (project.hasProperty("curseforge_embedded_dependencies")) {
-                project.curseforge_embedded_dependencies.split(", ").each {
-                    embeds(it)
-                }
+                embeds(project.curseforge_embedded_dependencies.split(", "))
             }
         }
     }
