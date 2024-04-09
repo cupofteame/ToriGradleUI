@@ -227,7 +227,7 @@ tasks.publishMods.doLast {
 
 // Support functions
 
-String[] splitProperty(var property) {
+String[] splitProperty(String property) {
     return property
             .split(',')
             .map(String::trim)
