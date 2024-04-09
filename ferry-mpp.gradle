@@ -169,7 +169,7 @@ publishMods {
                 username = project.project_owner
             }
 
-            thumbnail { url = project.project_logo }
+            //thumbnail { url = project.project_logo }
 
             content = changelog.map {
                 "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n"
@@ -181,6 +181,7 @@ publishMods {
     }
 }
 
+/* Disabled for now so I can see how the MPP announcement looks
 tasks.publishMods.doLast {
     if (project.hasProperty("github") && providers.environmentVariable("GITHUB_REPOSITORY").isPresent()) {
         // TODO: There is no way to get the GH URL from mod-publish-plugin yet.
@@ -207,6 +208,7 @@ tasks.publishMods.doLast {
         sendDiscordWebhook()
     }
 }
+*/
 
 
 // Support functions
