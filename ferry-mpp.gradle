@@ -218,7 +218,7 @@ String[] splitProperty(String property) {
         return new String[0];
     }
 
-    return value.split(',').map(String::trim).filter(String::isNotEmpty)
+    return value.split(',').map(String::trim).filter(String::isNotEmpty).collect
 }
 
 String getBranch() {
