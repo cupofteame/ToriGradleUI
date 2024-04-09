@@ -232,7 +232,6 @@ String[] splitProperty(var property) {
             .split(',')
             .map(String::trim)
             .filter(String::isNotEmpty)
-    }
 }
 
 String getBranch() {
