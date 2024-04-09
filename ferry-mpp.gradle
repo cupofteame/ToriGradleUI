@@ -105,25 +105,17 @@ publishMods {
             }
 
             // Dependencies
-            if (project.hasProperty("modrinth_required_dependencies")) {
-                splitProperty(project.getProperty("modrinth_required_dependencies")).each {
-                    requires(it)
-                }
+            splitProperty("modrinth_required_dependencies").each {
+                requires(it)
             }
-            if (project.hasProperty("modrinth_optional_dependencies")) {
-                splitProperty(project.modrinth_optional_dependencies).each {
-                    optional(it)
-                }
+            splitProperty("modrinth_optional_dependencies").each {
+                optional(it)
             }
-            if (project.hasProperty("modrinth_incompatible_dependencies")) {
-                splitProperty(project.modrinth_incompatible_dependencies).each {
-                    incompatible(it)
-                }
+            splitProperty("modrinth_incompatible_dependencies").each {
+                incompatible(it)
             }
-            if (project.hasProperty("modrinth_embedded_dependencies")) {
-                splitProperty(project.modrinth_embedded_dependencies).each {
-                    embeds(it)
-                }
+            splitProperty("modrinth_embedded_dependencies").each {
+                embeds(it)
             }
         }
     }
@@ -147,25 +139,17 @@ publishMods {
             }
 
             // Dependencies
-            if (project.hasProperty("curseforge_required_dependencies")) {
-                splitProperty(project.curseforge_required_dependencies).each {
-                    requires(it)
-                }
+            splitProperty("curseforge_required_dependencies").each {
+                requires(it)
             }
-            if (project.hasProperty("curseforge_optional_dependencies")) {
-                splitProperty(project.curseforge_optional_dependencies).each {
-                    optional(it)
-                }
+            splitProperty("curseforge_optional_dependencies").each {
+                optional(it)
             }
-            if (project.hasProperty("curseforge_incompatible_dependencies")) {
-                splitProperty(project.curseforge_incompatible_dependencies).each {
-                    incompatible(it)
-                }
+            splitProperty("curseforge_incompatible_dependencies").each {
+                incompatible(it)
             }
-            if (project.hasProperty("curseforge_embedded_dependencies")) {
-                splitProperty(project.curseforge_embedded_dependencies).each {
-                    embeds(it)
-                }
+            splitProperty("curseforge_embedded_dependencies").each {
+                embeds(it)
             }
         }
     }
@@ -227,11 +211,14 @@ tasks.publishMods.doLast {
 
 // Support functions
 
-String[] splitProperty(Property<String> property) {
-    return property
-            .split(',')
-            .map(String::trim)
-            .filter(String::isNotEmpty)
+String[] splitProperty(String property) {
+    String value = project.findProperty(property)
+
+    if (value == null) {
+        return new String[0];
+    }
+
+    return value.split(',').map(String::trim).filter(String::isNotEmpty)
 }
 
 String getBranch() {
