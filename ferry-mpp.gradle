@@ -103,27 +103,27 @@ publishMods {
             project.modrinth_mod_loaders.split(", ").each {
                 modLoaders.add it
             }
-        }
 
-        // Dependencies
-        if (project.hasProperty("modrinth_required_dependencies")) {
-            project.getProperty("modrinth_required_dependencies").split(',').map(String::trim).filter(String::isNotEmpty).each {
-                requires(it)
+            // Dependencies
+            if (project.hasProperty("modrinth_required_dependencies")) {
+                project.getProperty("modrinth_required_dependencies").split(',').map(String::trim).filter(String::isNotEmpty).each {
+                    requires(it)
+                }
             }
-        }
-        if (project.hasProperty("modrinth_optional_dependencies")) {
-            splitProperty(project.modrinth_optional_dependencies).each {
-                optional(it)
+            if (project.hasProperty("modrinth_optional_dependencies")) {
+                splitProperty(project.modrinth_optional_dependencies).each {
+                    optional(it)
+                }
             }
-        }
-        if (project.hasProperty("modrinth_incompatible_dependencies")) {
-            splitProperty(project.modrinth_incompatible_dependencies).each {
-                incompatible(it)
+            if (project.hasProperty("modrinth_incompatible_dependencies")) {
+                splitProperty(project.modrinth_incompatible_dependencies).each {
+                    incompatible(it)
+                }
             }
-        }
-        if (project.hasProperty("modrinth_embedded_dependencies")) {
-            splitProperty(project.modrinth_embedded_dependencies).each {
-                embeds(it)
+            if (project.hasProperty("modrinth_embedded_dependencies")) {
+                splitProperty(project.modrinth_embedded_dependencies).each {
+                    embeds(it)
+                }
             }
         }
     }
