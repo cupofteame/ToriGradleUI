@@ -218,7 +218,7 @@ String[] splitProperty(String property) {
         return new String[0];
     }
 
-    return value.split(',').filter(!it.isBlank())
+    return value.split(', *').findAll { !it.isBlank() }
 }
 
 String getBranch() {
