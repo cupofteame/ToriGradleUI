@@ -165,7 +165,7 @@ publishMods {
             if (project.use_project_username.toBoolean()) {
                 avatarUrl = project.project_logo
                 username = project.project_name
-            } else if (project.hasProperty("owner")) {
+            } else if (project.hasProperty("project_owner")) {
                 username = project.project_owner
             }
 
