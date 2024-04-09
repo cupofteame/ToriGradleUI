@@ -49,6 +49,11 @@ publishMods {
         type = ALPHA
     }
 
+    // A list of mod loaders the release supports
+    splitProperty("mod_loaders").each {
+        modLoaders.add(it)
+    }
+
     // The display name/release title, this defaults to the Gradle project name + version
     if (project.hasProperty("ext.releaseTitle")) {
         displayName = project.getProperty("ext.releaseTitle")
@@ -97,11 +102,6 @@ publishMods {
             // A list of the versions the release supports
             project.modrinth_game_versions.split(", ").each {
                 minecraftVersions.add it
-            }
-
-            // A list of mod loaders the release supports
-            project.modrinth_mod_loaders.split(", ").each {
-                modLoaders.add it
             }
 
             // Dependencies
