@@ -227,6 +227,14 @@ tasks.publishMods.doLast {
 
 // Support functions
 
+String[] splitProperty(var property) {
+    return property.toString().map {
+        it      .split(',')
+                .map(String::trim)
+                .filter(String::isNotEmpty)
+    }
+}
+
 String getBranch() {
     def branch = providers.environmentVariable("GITHUB_REF").getOrNull()
     if (branch != null) {
@@ -427,13 +435,5 @@ void sendDiscordWebhook() {
         }.send(providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK").get())
 
         println "Discord Webhook Response: " + result.responseCode
-    }
-
-    String[] splitProperty(Property prop) {
-        return prop.map {
-            it      .split(',')
-                    .map(String::trim)
-                    .filter(String::isNotEmpty)
-        }
     }
 }
