@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "me.modmuss50:mod-publish-plugin:0.5.0"
+        classpath "me.modmuss50:mod-publish-plugin:0.5.1"
         classpath "net.dumbcode.gradlehook:GradleHook:2.0.2"
         classpath "org.kohsuke:github-api:1.316"
         classpath "org.ajoberstar.grgit:grgit-gradle:4.1.0"
@@ -107,16 +107,24 @@ publishMods {
 
         // Dependencies
         if (project.hasProperty("modrinth_required_dependencies")) {
-            required = project.modrinth_required_dependencies.split(", ")
+            project.modrinth_required_dependencies.split(", ").each {
+                requires(it.toString())
+            }
         }
         if (project.hasProperty("modrinth_optional_dependencies")) {
-            optional = project.modrinth_optional_dependencies.split(", ")
+            project.modrinth_optional_dependencies.split(", ").each {
+                optional(it.toString())
+            }
         }
         if (project.hasProperty("modrinth_incompatible_dependencies")) {
-            incompatible = project.modrinth_incompatible_dependencies.split(", ")
+            project.modrinth_incompatible_dependencies.split(", ").each {
+                incompatible(it.toString())
+            }
         }
         if (project.hasProperty("modrinth_embedded_dependencies")) {
-            embeds = project.modrinth_embedded_dependencies.split(", ")
+            project.modrinth_embedded_dependencies.split(", ").each {
+                embeds(it.toString())
+            }
         }
     }
 
@@ -140,16 +148,24 @@ publishMods {
 
             // Dependencies
             if (project.hasProperty("curseforge_required_dependencies")) {
-                required = project.curseforge_required_dependencies.split(", ")
+                project.curseforge_required_dependencies.split(", ").each {
+                    requires(it.toString())
+                }
             }
             if (project.hasProperty("curseforge_optional_dependencies")) {
-                optional = project.curseforge_optional_dependencies.split(", ")
+                project.curseforge_optional_dependencies.split(", ").each {
+                    optional(it.toString())
+                }
             }
             if (project.hasProperty("curseforge_incompatible_dependencies")) {
-                incompatible = project.curseforge_incompatible_dependencies.split(", ")
+                project.curseforge_incompatible_dependencies.split(", ").each {
+                    incompatible(it.toString())
+                }
             }
             if (project.hasProperty("curseforge_embedded_dependencies")) {
-                embeds = project.curseforge_embedded_dependencies.split(", ")
+                project.curseforge_embedded_dependencies.split(", ").each {
+                    embeds(it.toString())
+                }
             }
         }
     }
