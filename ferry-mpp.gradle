@@ -35,15 +35,15 @@ publishMods {
     file = remapJar.archiveFile
 
     // Markdown changelog
-    changelog = releaseChangelog
+    changelog = ext.releaseChangelog
 
     // Defaults to the Gradle project version
     //version = getVersion()
 
     // Specify the release type
-    if (releaseType == "stable") {
+    if (ext.releaseType == "stable") {
         type = STABLE
-    } else if (releaseType == "beta") {
+    } else if (ext.releaseType == "beta") {
         type = BETA
     } else {
         type = ALPHA
@@ -172,7 +172,7 @@ publishMods {
             //thumbnail { url = project.project_logo }
 
             content = changelog.map {
-                "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n"
+                "### [" + project.project_name + ext.stabilitySuffix + "](" + project.project_url + ")\n"
                 + "$project.project_name v$version for $project.minecraft_version Released"
                 + "### Changes:\n" + it
                 + "### Downloads:\n"
@@ -186,23 +186,23 @@ tasks.publishMods.doLast {
     if (project.hasProperty("github") && providers.environmentVariable("GITHUB_REPOSITORY").isPresent()) {
         // TODO: There is no way to get the GH URL from mod-publish-plugin yet.
         //       We'll just make it up, but we should get it right for Terraformers releases at least.
-        githubDownloadLink = "https://github.com/" + providers.environmentVariable("GITHUB_REPOSITORY").get() + "/releases/tag/" + project.getProperty("currentTag")
+        ext.githubDownloadLink = "https://github.com/" + providers.environmentVariable("GITHUB_REPOSITORY").get() + "/releases/tag/" + project.getProperty("currentTag")
     }
 
     if (project.hasProperty("modrinth")) {
         def fileId = version
-        modrinthDownloadLink = "https://modrinth.com/mod/$project.modrinth_slug/version/$fileId"
+        ext.modrinthDownloadLink = "https://modrinth.com/mod/$project.modrinth_slug/version/$fileId"
     }
 
     if (project.hasProperty("curseforge")) {
         // TODO: There is no way to get the fileId from mod-publish-plugin or from CF itself yet.
         //       I've compromised by linking a file list ordered recent-first.
-        curseforgeDownloadLink = "https://www.curseforge.com/minecraft/mc-mods/$project.curseforge_slug/files?sortBy=dateCreated&sortOrder=desc";
+        ext.curseforgeDownloadLink = "https://www.curseforge.com/minecraft/mc-mods/$project.curseforge_slug/files?sortBy=dateCreated&sortOrder=desc";
     }
 
-    println "CurseForge download: $curseforgeDownloadLink"
-    println "Modrinth download: $modrinthDownloadLink"
-    println "GitHub download: $githubDownloadLink"
+    println "CurseForge download: ${ext.curseforgeDownloadLink}"
+    println "Modrinth download: ${ext.modrinthDownloadLink}"
+    println "GitHub download: ${ext.githubDownloadLink}"
 
     if (project.hasProperty("discord")) {
         sendDiscordWebhook()
@@ -280,25 +280,25 @@ task generateChangelog {
     println "Current version: $currentTag"
 
     if (currentTag.contains("-alpha")) {
-        releaseType = "alpha"
-        curseReleaseType = "alpha"
-        stabilitySuffix = " (Alpha)"
+        ext.releaseType = "alpha"
+        ext.curseReleaseType = "alpha"
+        ext.stabilitySuffix = " (Alpha)"
     } else if (currentTag.contains("-beta")) {
-        releaseType = "beta"
-        curseReleaseType = "beta"
-        stabilitySuffix = " (Beta)"
+        ext.releaseType = "beta"
+        ext.curseReleaseType = "beta"
+        ext.stabilitySuffix = " (Beta)"
     } else if (currentTag.contains("-pre")) {
-        releaseType = "pre"
-        curseReleaseType = "beta"
-        stabilitySuffix = " (Pre-Release)"
+        ext.releaseType = "pre"
+        ext.curseReleaseType = "beta"
+        ext.stabilitySuffix = " (Pre-Release)"
     } else if (currentTag.contains("-rc")) {
-        releaseType = "rc"
-        curseReleaseType = "beta"
-        stabilitySuffix = " (Release Candidate)"
+        ext.releaseType = "rc"
+        ext.curseReleaseType = "beta"
+        ext.stabilitySuffix = " (Release Candidate)"
     } else if (!currentTag.contains("-")) {
-        releaseType = "stable"
+        ext.releaseType = "stable"
     }
-    println "Release type: $releaseType"
+    println "Release type: ${ext.releaseType}"
 
     commits.in.eachLine { line -> // Loops over the lines the git log command returns
         def processedLine = line.toString()
@@ -323,11 +323,11 @@ task generateChangelog {
     commits.err.eachLine { line -> println line }
     commits.waitFor()
     println "Changelog:"
-    releaseChangelog = changes.toString()
-    if (releaseChangelog.isEmpty()) {
-        releaseChangelog = "No Changelog Available"
+    ext.releaseChangelog = changes.toString()
+    if (ext.releaseChangelog.isEmpty()) {
+        ext.releaseChangelog = "No Changelog Available"
     }
-    println releaseChangelog
+    println ext.releaseChangelog
 }
 
 
@@ -336,10 +336,10 @@ task generateChangelog {
 // Truncates changelogs for the Discord Webhook
 ext.createDiscordChangelog = { fullChangelogUrl ->
     def webhookChangelog = StringBuilder.newInstance()
-    def changelogLines = releaseChangelog.split("\n")
+    def changelogLines = ext.releaseChangelog.split("\n")
     def maxLines = Integer.decode(project.discord_webhook_changelog_line_limit)
     if (changelogLines.length <= maxLines) {
-        return releaseChangelog
+        return ext.releaseChangelog
     } else {
         def lines = 0
         changelogLines.find { line ->
@@ -362,29 +362,29 @@ void sendDiscordWebhook() {
     // Send if we have links for all the things we should.
     if (!project.hasProperty("dryRun") &&
             !providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK").isPresent() ||
-            (project.hasProperty('github') && githubDownloadLink == null) ||
-            (project.hasProperty("modrinth") && modrinthDownloadLink == null) ||
-            (project.hasProperty("curseforge") && curseforgeDownloadLink == null)) {
+            (project.hasProperty('github') && ext.githubDownloadLink == null) ||
+            (project.hasProperty("modrinth") && ext.modrinthDownloadLink == null) ||
+            (project.hasProperty("curseforge") && ext.curseforgeDownloadLink == null)) {
         println "Missing webhook env or at least one deployment failed; aborting Discord..."
     } else {
         println "Preparing webhook"
-        def release_url = modrinthDownloadLink
+        def release_url = ext.modrinthDownloadLink
         def discordChangelog = createDiscordChangelog(release_url)
         def downloads = ""
 
-        if (modrinthDownloadLink != null) {
-            downloads += "[$modrinth_emote Modrinth]($modrinthDownloadLink)\n"
+        if (ext.modrinthDownloadLink != null) {
+            downloads += "[$modrinth_emote Modrinth](${ext.modrinthDownloadLink})\n"
         }
-        if (curseforgeDownloadLink != null) {
-            downloads += "[$curseforge_emote CurseForge]($curseforgeDownloadLink)\n"
+        if (ext.curseforgeDownloadLink != null) {
+            downloads += "[$curseforge_emote CurseForge](${ext.curseforgeDownloadLink})\n"
         }
-        if (githubDownloadLink != null) {
-            downloads += "[$github_emote GitHub]($githubDownloadLink)\n"
+        if (ext.githubDownloadLink != null) {
+            downloads += "[$github_emote GitHub](${ext.githubDownloadLink})\n"
         }
 
         // TODO: hot mess info dump
         if (project.hasProperty("dryRun")) {
-            println "" + project.project_name + stabilitySuffix + " -> " + project.project_url
+            println "" + project.project_name + ext.stabilitySuffix + " -> " + project.project_url
             println "$project.project_name v$version for $project.minecraft_version Released"
             println "Release: " + release_url
             println "Changes:\n" + discordChangelog
@@ -401,7 +401,7 @@ void sendDiscordWebhook() {
             embed {
                 color = Integer.decode(project.project_color)
                 author {
-                    name = project.project_name + stabilitySuffix
+                    name = project.project_name + ext.stabilitySuffix
                     url = project.project_url
                 }
                 thumbnail { url = project.project_logo }
