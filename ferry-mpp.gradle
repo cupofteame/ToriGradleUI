@@ -49,17 +49,12 @@ publishMods {
         type = ALPHA
     }
 
-    // A list of mod loaders the release supports
-    splitProperty("mod_loaders").each {
-        modLoaders.add(it)
-    }
-
     // The display name/release title, this defaults to the Gradle project name + version
-    if (project.hasProperty("ext.releaseTitle")) {
-        displayName = project.getProperty("ext.releaseTitle")
+    if (project.hasProperty("releaseTitle")) {
+        displayName = project.getProperty("releaseTitle")
     }
 
-    // A ConfigurableFileCollection of addional files that are uploaded alongside the main file
+    // A ConfigurableFileCollection of additional files that are uploaded alongside the main file
     //additionalFiles.from(jar.archiveFile)
 
     // The max number of times to retry on server error, defaults to 3.
@@ -71,6 +66,69 @@ publishMods {
     // Set the brand color for all targets to the project's brand color.
     // ... what happened to this property? ...
     //brandColor = Integer.decode(project.project_color)
+
+    def options_modrinth = modrinthOptions {
+        if (providers.environmentVariable("MODRINTH_TOKEN").isPresent()) {
+            accessToken = providers.environmentVariable("MODRINTH_TOKEN").get()
+        } else {
+            accessToken = "undefined"
+            dryRun = true
+        }
+
+        projectId = project.modrinth_id
+        announcementTitle = "$project.modrinth_emote Modrinth"
+
+        // A list of the versions the release supports
+        project.modrinth_game_versions.split(", ").each {
+            minecraftVersions.add it
+        }
+
+        // Dependencies
+        splitProperty("modrinth_required_dependencies").each {
+            requires(it)
+        }
+        splitProperty("modrinth_optional_dependencies").each {
+            optional(it)
+        }
+        splitProperty("modrinth_incompatible_dependencies").each {
+            incompatible(it)
+        }
+        splitProperty("modrinth_embedded_dependencies").each {
+            embeds(it)
+        }
+    }
+
+    def options_curseforge = curseforgeOptions {
+        if (providers.environmentVariable("CURSEFORGE_TOKEN").isPresent()) {
+            accessToken = providers.environmentVariable("CURSEFORGE_TOKEN").get()
+        } else {
+            accessToken = "undefined"
+            dryRun = true
+        }
+
+        projectId = project.curseforge_id
+        projectSlug = project.curseforge_slug
+        announcementTitle = "$project.curseforge_emote CurseForge"
+
+        // A list of the versions the release supports
+        project.curseforge_game_versions.split(", ").each {
+            minecraftVersions.add it
+        }
+
+        // Dependencies
+        splitProperty("curseforge_required_dependencies").each {
+            requires(it)
+        }
+        splitProperty("curseforge_optional_dependencies").each {
+            optional(it)
+        }
+        splitProperty("curseforge_incompatible_dependencies").each {
+            incompatible(it)
+        }
+        splitProperty("curseforge_embedded_dependencies").each {
+            embeds(it)
+        }
+    }
 
     if (project.hasProperty("github") && providers.environmentVariable("GITHUB_REPOSITORY").isPresent()) {
         github {
@@ -88,68 +146,27 @@ publishMods {
     }
 
     if (project.hasProperty("modrinth")) {
-        modrinth {
-            if (providers.environmentVariable("MODRINTH_TOKEN").isPresent()) {
-                accessToken = providers.environmentVariable("MODRINTH_TOKEN").get()
-            } else {
-                accessToken = "undefined"
-                dryRun = true
-            }
+        splitProperty("enabled_platforms").each {
+            modrinth("modrinth_${it}") {
+                from options_modrinth
 
-            projectId = project.modrinth_id
-            announcementTitle = "$project.modrinth_emote Modrinth"
-
-            // A list of the versions the release supports
-            project.modrinth_game_versions.split(", ").each {
-                minecraftVersions.add it
-            }
-
-            // Dependencies
-            splitProperty("modrinth_required_dependencies").each {
-                requires(it)
-            }
-            splitProperty("modrinth_optional_dependencies").each {
-                optional(it)
-            }
-            splitProperty("modrinth_incompatible_dependencies").each {
-                incompatible(it)
-            }
-            splitProperty("modrinth_embedded_dependencies").each {
-                embeds(it)
+                announcementTitle = announcementTitle + " - " + it.capitalize()
+                displayName = getReleaseTitle(it.capitalize())
+                file = project(":${it}").remapJar.archiveFile
+                modLoaders.add(it)
             }
         }
     }
 
     if (project.hasProperty("curseforge")) {
-        curseforge {
-            if (providers.environmentVariable("CURSEFORGE_TOKEN").isPresent()) {
-                accessToken = providers.environmentVariable("CURSEFORGE_TOKEN").get()
-            } else {
-                accessToken = "undefined"
-                dryRun = true
-            }
+        splitProperty("enabled_platforms").each {
+            modrinth("curseforge_${it}") {
+                from options_curseforge
 
-            projectId = project.curseforge_id
-            projectSlug = project.curseforge_slug
-            announcementTitle = "$project.curseforge_emote CurseForge"
-
-            // A list of the versions the release supports
-            project.curseforge_game_versions.split(", ").each {
-                minecraftVersions.add it
-            }
-
-            // Dependencies
-            splitProperty("curseforge_required_dependencies").each {
-                requires(it)
-            }
-            splitProperty("curseforge_optional_dependencies").each {
-                optional(it)
-            }
-            splitProperty("curseforge_incompatible_dependencies").each {
-                incompatible(it)
-            }
-            splitProperty("curseforge_embedded_dependencies").each {
-                embeds(it)
+                announcementTitle = announcementTitle + " - " + it.capitalize()
+                displayName = getReleaseTitle(it.capitalize())
+                file = project(":${it}").remapJar.archiveFile
+                modLoaders.add(it)
             }
         }
     }
@@ -265,6 +282,14 @@ String getVersion() {
         }
     }
     return version
+}
+
+String getReleaseTitle(String platform) {
+    if (platform == null) {
+        return "${project.project_name} v${version} for ${project.minecraft_version}"
+    }
+
+    return "${project.project_name} ${platform} v${version} for ${project.minecraft_version}"
 }
 
 task generateChangelog {
