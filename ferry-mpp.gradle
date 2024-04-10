@@ -150,7 +150,7 @@ publishMods {
             modrinth("modrinth_${it}") {
                 from options_modrinth
 
-                announcementTitle = announcementTitle + " - " + it.capitalize()
+                announcementTitle = "" + announcementTitle + " - " + it.capitalize()
                 displayName = getReleaseTitle(it.capitalize())
                 file = project(":${it}").remapJar.archiveFile
                 modLoaders.add(it)
@@ -163,7 +163,7 @@ publishMods {
             modrinth("curseforge_${it}") {
                 from options_curseforge
 
-                announcementTitle = announcementTitle + " - " + it.capitalize()
+                announcementTitle = "" + announcementTitle + " - " + it.capitalize()
                 displayName = getReleaseTitle(it.capitalize())
                 file = project(":${it}").remapJar.archiveFile
                 modLoaders.add(it)
