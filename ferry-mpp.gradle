@@ -141,6 +141,14 @@ publishMods {
             repository = providers.environmentVariable("GITHUB_REPOSITORY").get()
 
             commitish = getBranch()
+
+            // file is unfortunately mandatory
+            // TODO: https://github.com/modmuss50/mod-publish-plugin/issues/29
+            file = layout.projectDirectory.file("README.md")
+
+            splitProperty("enabled_platforms").each { var platform ->
+                additionalFiles.from(project(":${platform}").remapJar.archiveFile)
+            }
         }
     }
 
@@ -153,6 +161,10 @@ publishMods {
                 displayName = getReleaseTitle(platform.capitalize())
                 file = project(":${platform}").remapJar.archiveFile
                 modLoaders.add(platform)
+
+                if (platform == "fabric") {
+                    modLoaders.add("quilt")
+                }
             }
         }
     }
@@ -166,6 +178,10 @@ publishMods {
                 displayName = getReleaseTitle(platform.capitalize())
                 file = project(":${platform}").remapJar.archiveFile
                 modLoaders.add(platform)
+
+                if (platform == "fabric") {
+                    modLoaders.add("quilt")
+                }
             }
         }
     }
