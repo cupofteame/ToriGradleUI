@@ -75,11 +75,11 @@ publishMods {
         }
 
         projectId = project.modrinth_id
-        announcementTitle = "$project.modrinth_emote Modrinth"
+        announcementTitle = "${project.modrinth_emote} Modrinth"
 
         // A list of the versions the release supports
-        project.modrinth_game_versions.split(", ").each {
-            minecraftVersions.add it
+        splitProperty("modrinth_game_versions").each {
+            minecraftVersions.add(it)
         }
 
         // Dependencies
@@ -107,11 +107,11 @@ publishMods {
 
         projectId = project.curseforge_id
         projectSlug = project.curseforge_slug
-        announcementTitle = "$project.curseforge_emote CurseForge"
+        announcementTitle = "${project.curseforge_emote} CurseForge"
 
         // A list of the versions the release supports
-        project.curseforge_game_versions.split(", ").each {
-            minecraftVersions.add it
+        splitProperty("curseforge_game_versions").each {
+            minecraftVersions.add(it)
         }
 
         // Dependencies
@@ -157,7 +157,7 @@ publishMods {
             modrinth("${platform}Modrinth") {
                 from options_modrinth
 
-                announcementTitle = "" + announcementTitle + " - " + platform.capitalize()
+                announcementTitle = "${project.modrinth_emote} Modrinth - " + platform.capitalize()
                 displayName = getReleaseTitle(platform.capitalize())
                 file = project(":${platform}").remapJar.archiveFile
                 modLoaders.add(platform)
@@ -174,7 +174,7 @@ publishMods {
             curseforge("${platform}Curseforge") {
                 from options_curseforge
 
-                announcementTitle = "" + announcementTitle + " - " + platform.capitalize()
+                announcementTitle = "${project.curseforge_emote} CurseForge - " + platform.capitalize()
                 displayName = getReleaseTitle(platform.capitalize())
                 file = project(":${platform}").remapJar.archiveFile
                 modLoaders.add(platform)
@@ -207,7 +207,7 @@ publishMods {
 
             content = changelog.map {
                 "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n" +
-                "${project.project_name} v${version} for ${project.minecraft_version} Released\n" +
+                "" + project.project_name + " v" + project.version + " for " + project.minecraft_version + " Released\n" +
                 "### Changes:\n" + it + "\n" +
                 "### Downloads:\n"
             }
@@ -224,7 +224,7 @@ tasks.publishMods.doLast {
     }
 
     if (project.hasProperty("modrinth")) {
-        def fileId = version
+        def fileId = project.version
         modrinthDownloadLink = "https://modrinth.com/mod/$project.modrinth_slug/version/$fileId"
     }
 
@@ -303,10 +303,10 @@ String getVersion() {
 
 String getReleaseTitle(String platform) {
     if (platform == null) {
-        return "${project.project_name} v${version} for ${project.minecraft_version}"
+        return "${project.project_name} v${project.version} for ${project.minecraft_version}"
     }
 
-    return "${project.project_name} ${platform} v${version} for ${project.minecraft_version}"
+    return "${project.project_name} ${platform} v${project.version} for ${project.minecraft_version}"
 }
 
 task generateChangelog {
@@ -427,7 +427,7 @@ void sendDiscordWebhook() {
         // TODO: hot mess info dump
         if (project.hasProperty("dryRun")) {
             println "" + project.project_name + stabilitySuffix + " -> " + project.project_url
-            println "$project.project_name v$version for $project.minecraft_version Released"
+            println "${project.project_name} v${project.version} for ${project.minecraft_version} Released"
             println "Release: " + release_url
             println "Changes:\n" + discordChangelog
             println "Downloads:\n" + downloads
@@ -447,7 +447,7 @@ void sendDiscordWebhook() {
                     url = project.project_url
                 }
                 thumbnail { url = project.project_logo }
-                title = "$project.project_name v$version for $project.minecraft_version Released"
+                title = "${project.project_name} v${project.version} for ${project.minecraft_version} Released"
                 url = release_url
                 field {
                     name = "Changes:"
