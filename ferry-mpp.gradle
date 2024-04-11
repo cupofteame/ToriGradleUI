@@ -25,14 +25,13 @@ var modrinthDownloadLink
 var githubDownloadLink
 var releaseType = project.default_release_type
 
-version = getVersion()
-
+rootProject.setVersion(getVersion())
 
 // Publishing configuration
 
 publishMods {
     // Set the main file to be uploaded
-    file = remapJar.archiveFile
+    //file = remapJar.archiveFile
 
     // Markdown changelog
     changelog = releaseChangelog
@@ -146,27 +145,27 @@ publishMods {
     }
 
     if (project.hasProperty("modrinth")) {
-        splitProperty("enabled_platforms").each {
-            modrinth("modrinth_${it}") {
+        splitProperty("enabled_platforms").each { var platform ->
+            modrinth("${platform}Modrinth") {
                 from options_modrinth
 
-                announcementTitle = "" + announcementTitle + " - " + it.capitalize()
-                displayName = getReleaseTitle(it.capitalize())
-                file = project(":${it}").remapJar.archiveFile
-                modLoaders.add(it)
+                announcementTitle = "" + announcementTitle + " - " + platform.capitalize()
+                displayName = getReleaseTitle(platform.capitalize())
+                file = project(":${platform}").remapJar.archiveFile
+                modLoaders.add(platform)
             }
         }
     }
 
     if (project.hasProperty("curseforge")) {
-        splitProperty("enabled_platforms").each {
-            modrinth("curseforge_${it}") {
+        splitProperty("enabled_platforms").each { var platform ->
+            curseforge("${platform}Curseforge") {
                 from options_curseforge
 
-                announcementTitle = "" + announcementTitle + " - " + it.capitalize()
-                displayName = getReleaseTitle(it.capitalize())
-                file = project(":${it}").remapJar.archiveFile
-                modLoaders.add(it)
+                announcementTitle = "" + announcementTitle + " - " + platform.capitalize()
+                displayName = getReleaseTitle(platform.capitalize())
+                file = project(":${platform}").remapJar.archiveFile
+                modLoaders.add(platform)
             }
         }
     }
@@ -175,9 +174,11 @@ publishMods {
         discord {
             if (!providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK").isPresent()) {
                 dryRun = true
+                dryRunWebhookUrl = providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK_DRY_RUN")
+                webhookUrl = "undefined"
+            } else {
+                webhookUrl = providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK")
             }
-            webhookUrl = providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK")
-            dryRunWebhookUrl = providers.environmentVariable("DISCORD_ANNOUNCEMENT_WEBHOOK_DRY_RUN")
 
             if (project.use_project_username.toBoolean()) {
                 avatarUrl = project.project_logo
@@ -189,10 +190,10 @@ publishMods {
             //thumbnail { url = project.project_logo }
 
             content = changelog.map {
-                "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n"
-                + "$project.project_name v$version for $project.minecraft_version Released"
-                + "### Changes:\n" + it
-                + "### Downloads:\n"
+                "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n" +
+                "${project.project_name} v${version} for ${project.minecraft_version} Released\n" +
+                "### Changes:\n" + it + "\n" +
+                "### Downloads:\n"
             }
         }
     }
