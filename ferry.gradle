@@ -269,7 +269,7 @@ modrinth {
     project.modrinth_mod_loaders.split(", ").each {
         loaders.add it
     }
-    if (project.hasProperty("modrinth_required_dep_ids")) {
+    if (project.hasProperty("modrinth_required_dependencies")) {
         project.modrinth_required_dependencies.split(", ").each {
             deps.add new ModDependency(it, "required")
         }
