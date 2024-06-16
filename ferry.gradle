@@ -269,26 +269,28 @@ modrinth {
     project.modrinth_mod_loaders.split(", ").each {
         loaders.add it
     }
-    if (project.hasProperty("modrinth_required_dependencies")) {
-        project.modrinth_required_dependencies.split(", ").each {
-            deps.add new ModDependency(it, "required")
-        }
-    }
-    if (project.hasProperty("modrinth_optional_dependencies")) {
-        project.modrinth_optional_dependencies.split(", ").each {
-            deps.add new ModDependency(it, "optional")
-        }
-    }
-    if (project.hasProperty("modrinth_incompatible_dependencies")) {
-        project.modrinth_incompatible_dependencies.split(", ").each {
-            deps.add new ModDependency(it, "incompatible")
-        }
-    }
-    if (project.hasProperty("modrinth_embedded_dependencies")) {
-        project.modrinth_embedded_dependencies.split(", ").each {
-            deps.add new ModDependency(it, "embedded")
-        }
-    }
+	dependencies {
+	    if (project.hasProperty("modrinth_required_dependencies")) {
+	        project.modrinth_required_dependencies.split(", ").each {
+				required.project it
+	        }
+	    }
+	    if (project.hasProperty("modrinth_optional_dependencies")) {
+	        project.modrinth_optional_dependencies.split(", ").each {
+				optional.project it
+	        }
+	    }
+	    if (project.hasProperty("modrinth_incompatible_dependencies")) {
+	        project.modrinth_incompatible_dependencies.split(", ").each {
+				incompatible.project it
+	        }
+	    }
+	    if (project.hasProperty("modrinth_embedded_dependencies")) {
+	        project.modrinth_embedded_dependencies.split(", ").each {
+				embedded.project it
+	        }
+	    }
+	}
 }
 
 tasks.modrinth.doLast {
