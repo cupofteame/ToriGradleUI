@@ -44,7 +44,7 @@ publishMods {
     // Specify the release type
     if (releaseType == "stable") {
         type = STABLE
-    } else if (releaseType == "beta") {
+    } else if (releaseType == "beta" || releaseType == "pre" || releaseType == "rc") {
         type = BETA
     } else {
         type = ALPHA
