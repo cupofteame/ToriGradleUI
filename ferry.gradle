@@ -258,6 +258,11 @@ String getBranch() {
 import com.modrinth.minotaur.dependencies.ModDependency
 
 modrinth {
+    if (System.getenv().MODRINTH_TOKEN) {
+        token = System.getenv().MODRINTH_TOKEN
+    } else {
+        println "No MODRINTH_TOKEN specified"
+    }
     projectId = project.modrinth_id
     versionName = "v$version for $project.minecraft_version"
     uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
