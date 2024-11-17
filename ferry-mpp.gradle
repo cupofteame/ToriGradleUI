@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "me.modmuss50:mod-publish-plugin:0.5.1"
+        classpath "me.modmuss50:mod-publish-plugin:0.8.0"
         classpath "net.dumbcode.gradlehook:GradleHook:2.0.2"
         classpath "org.kohsuke:github-api:1.316"
         classpath "org.ajoberstar.grgit:grgit-gradle:4.1.1"
@@ -209,7 +209,13 @@ publishMods {
                 username = project.project_owner
             }
 
-            //thumbnail { url = project.project_logo }
+            style {
+                link = BUTTON
+                look = MODERN
+
+                color = project.project_color
+                thumbnailUrl = project.project_logo
+            }
 
             content = changelog.map {
                 "### [" + project.project_name + stabilitySuffix + "](" + project.project_url + ")\n" +
