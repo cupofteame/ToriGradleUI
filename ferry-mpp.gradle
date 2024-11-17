@@ -212,7 +212,7 @@ publishMods {
             style {
                 link = "INLINE"
                 look = "MODERN"
-                color = Integer.decode(project.project_color)
+                color = Integer.decode(project.project_color).toString()
                 thumbnailUrl = project.project_logo
             }
 
