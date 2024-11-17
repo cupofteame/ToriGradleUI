@@ -210,11 +210,11 @@ publishMods {
             }
 
             style {
-                link = BUTTON
                 look = MODERN
-
                 color = project.project_color
                 thumbnailUrl = project.project_logo
+
+                link = BUTTON
             }
 
             content = changelog.map {
