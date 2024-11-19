@@ -23,7 +23,6 @@ def stabilitySuffix = ""
 def curseforgeDownloadLink = null
 def modrinthDownloadLink = null
 def githubDownloadLink = null
-def releaseType = project.default_release_type
 
 rootProject.setVersion(getVersion())
 
@@ -42,13 +41,8 @@ publishMods {
     //version = getVersion()
 
     // Specify the release type
-    if (releaseType == "stable") {
-        type = STABLE
-    } else if (releaseType == "beta" || releaseType == "pre" || releaseType == "rc") {
-        type = BETA
-    } else {
-        type = ALPHA
-    }
+    // This gets reconfigured later by the generateChangelog task.
+    type = project.default_release_type
 
     // The display name/release title, this defaults to the Gradle project name + version
     if (project.hasProperty("releaseTitle")) {
@@ -270,6 +264,7 @@ task generateChangelog {
     println "Last version: $lastTag"
     println "Current version: $currentTag"
 
+    def releaseType = project.default_release_type
     if (currentTag.contains("-alpha")) {
         releaseType = "alpha"
         curseReleaseType = "alpha"
@@ -328,6 +323,14 @@ task generateChangelog {
     // Do MPP config which depends on the changelog:
     doLast {
         publishMods.changelog = releaseChangelog
+
+        if (releaseType == "stable") {
+            publishMods.type = STABLE
+        } else if (releaseType == "beta" || releaseType == "pre" || releaseType == "rc") {
+            publishMods.type = BETA
+        } else {
+            publishMods.type = ALPHA
+        }
     }
 }
 
